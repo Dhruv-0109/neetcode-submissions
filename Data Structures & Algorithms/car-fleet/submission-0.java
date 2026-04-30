@@ -1,28 +1,52 @@
+// Problem Restated: 
+// “How many groups of cars reach the destination, given that faster cars cannot pass slower ones ahead?”
+
+// Approach:
+// 1. Map the cars to its speed with 2D array of 2 columns 
+// 2. Sort the cars based on its which is closest to the destination
+// 3. now, initialise the maxTime that we have seen so far for cars processed
+
+// 4. calculate time = distance (target-position) / speed
+// 5. if the current time taken for car[i] > the maxTime seen so far, that means it needs a new fleet so increment fleets and update maxTime for the next car as cars cannot overtake 
+
+
 class Solution {
     public int carFleet(int target, int[] position, int[] speed) {
       
-        int len = position.length;
-        if(len==0)return 0;
+      if(position.length==1) return 1;
 
-        //Step 1: create (position,speed) pairs 
-        double[][]cars = new double[len][2];
-        for(int i=0; i < len; i++)
+      int[][]cars = sortCarsByPosition(position, speed);
+      int len = position.length;
+
+      double maxTime = 0; int fleets = 0;
+
+      for(int i=len-1; i>=0; i--)
+      {
+        //time = distance/speed
+        double time = (double)(target-cars[i][0]) / cars[i][1];
+
+        if(time > maxTime)
         {
-            cars[i][0] = position[i];
-            cars[i][1] = (double)(target-position[i])/speed[i];
+            fleets++;
+            maxTime = time;
         }
-        Arrays.sort(cars, (a,b) ->Double.compare(b[0],a[0])); //Sort descending by position
+      }
+      return fleets;
+    }
+    
+    public int[][] sortCarsByPosition(int[]position, int[]speed)
+    {
+        int len = position.length;
+        int[][]cars = new int[len][2];
 
-        //Step 2: Use a stack to track fleets
-        Stack<Double>stack = new Stack<>();
         for(int i=0; i<len; i++)
         {
-            double time = cars[i][1]; //time for this car to reach the target
-            
-            //if the stack is empty or current car takes more time than the last fleet, form new
-            if(stack.isEmpty() || time > stack.peek())
-                stack.push(time);  
+            cars[i][0] = position[i];
+            cars[i][1] = speed[i];
         }
-        return stack.size(); //return the number of fleets
+
+        Arrays.sort(cars, (a,b)->a[0]-b[0]);
+
+        return cars;
     }
 }
