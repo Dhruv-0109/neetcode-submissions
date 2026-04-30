@@ -1,25 +1,24 @@
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int len = nums.length;
-        int [] output = new int[len];
-        int prefix = 1;
-        
-        
-        for( int i=0; i<len; i++)
-        {
-            output[i] = prefix;
-            prefix *=nums[i];
 
-        }
+     int len = nums.length;
+     int [] output = new int[len];
 
-        //POSTFIX
-        int postfix = 1;
+     int prefix = 1;
+     for(int i=0; i<len; i++)
+     {
+        output[i] = prefix;
+        prefix*=nums[i];
+     }
 
-        for(int i = len-1; i>=0; i--)
-        {
-            output[i] *= postfix;
-            postfix *= nums[i];
-        }
-        return output;
+     int suffix = 1;
+     for(int i=len-1; i>=0; i--)
+     {
+        output[i]*=suffix;
+        suffix*=nums[i];
+     }
+
+    return output;
+
     }
 }  
